@@ -1,0 +1,6 @@
+@EndUserText.label : 'Demo Project Manager (V4 UI)'
+define service ZUI_DM_PROJECTS {
+  expose ZC_DM_PROJECT as Project;
+  expose ZC_DM_TASK as Task;
+  expose ZC_DM_TIMEENTRY as TimeEntry;
+}

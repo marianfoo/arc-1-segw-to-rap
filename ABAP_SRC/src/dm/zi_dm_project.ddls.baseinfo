@@ -1,0 +1,10 @@
+{
+  "BASEINFO": {
+    "FROM": [
+      "ZDM_PROJECT"
+    ],
+    "ASSOCIATED": [
+      "ZI_DM_TASK"
+    ]
+  }
+}

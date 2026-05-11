@@ -1,0 +1,13 @@
+<mvc:View
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.f"
+	controllerName="com.demo.migration.projects.modern.controller.App"
+	displayBlock="true"
+	height="100%"
+>
+	<FlexibleColumnLayout
+		id="flexibleColumnLayout"
+		backgroundDesign="Solid"
+		layout="OneColumn"
+	/>
+</mvc:View>

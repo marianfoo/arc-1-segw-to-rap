@@ -1,0 +1,36 @@
+projection;
+strict ( 2 );
+use draft;
+
+define behavior for ZC_DM_PROJECT alias Project
+  use etag
+{
+  use create;
+  use update;
+  use delete;
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+  use action approve_project;
+  use association _Tasks { create; with draft; }
+}
+
+define behavior for ZC_DM_TASK alias Task
+  use etag
+{
+  use update;
+  use delete;
+  use association _Project { with draft; }
+  use association _TimeEntries { create; with draft; }
+}
+
+define behavior for ZC_DM_TIMEENTRY alias TimeEntry
+  use etag
+{
+  use update;
+  use delete;
+  use association _Task { with draft; }
+  use association _Project { with draft; }
+}

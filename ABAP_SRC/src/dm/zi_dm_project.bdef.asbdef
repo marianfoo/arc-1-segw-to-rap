@@ -1,0 +1,105 @@
+managed implementation in class zbp_dm_project unique;
+strict ( 2 );
+with draft;
+
+define behavior for ZI_DM_PROJECT alias Project
+  persistent table zdm_project
+  draft table zdm_project_d
+  lock master
+  total etag CreationTimeStamp
+  etag master LastChangedStamp
+  authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+  field ( readonly : update ) ProjectId;
+  field ( readonly ) CreationTimeStamp, LastChangedStamp;
+  association _Tasks { create; with draft; }
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+  action approve_project result [1] $self;
+
+  mapping for zdm_project
+  {
+    ProjectId      = project_id;
+    Title          = title;
+    Description    = description;
+    Status         = status;
+    StartDate      = start_date;
+    EndDate        = end_date;
+    Erdat          = erdat;
+    Erzet          = erzet;
+    Ernam          = ernam;
+    Aedat          = aedat;
+    Aezet          = aezet;
+    Aenam          = aenam;
+  }
+}
+
+define behavior for ZI_DM_TASK alias Task
+  persistent table zdm_task
+  draft table zdm_task_d
+  lock dependent by _Project
+  etag dependent by _Project
+  authorization dependent by _Project
+{
+  update;
+  delete;
+  field ( readonly : update ) TaskId, ProjectId;
+  association _Project       { with draft; }
+  association _TimeEntries   { create; with draft; }
+
+  mapping for zdm_task
+  {
+    TaskId          = task_id;
+    ProjectId       = project_id;
+    Title           = title;
+    Description     = description;
+    Status          = status;
+    Priority        = priority;
+    DueDate         = due_date;
+    AssignedTo      = assigned_to;
+    EstimatedHours  = estimated_hours;
+    Erdat           = erdat;
+    Erzet           = erzet;
+    Ernam           = ernam;
+    Aedat           = aedat;
+    Aezet           = aezet;
+    Aenam           = aenam;
+  }
+}
+
+define behavior for ZI_DM_TIMEENTRY alias TimeEntry
+  persistent table zdm_timeentry
+  draft table zdm_timeentry_d
+  lock dependent by _Project
+  etag dependent by _Project
+  authorization dependent by _Project
+{
+  update;
+  delete;
+  field ( readonly : update ) EntryId, TaskId, ProjectId;
+  association _Project { with draft; }
+  association _Task    { with draft; }
+
+  mapping for zdm_timeentry
+  {
+    EntryId     = entry_id;
+    TaskId      = task_id;
+    ProjectId   = project_id;
+    WorkDate    = work_date;
+    WorkHours   = work_hours;
+    Description = description;
+    Username    = username;
+    Erdat       = erdat;
+    Erzet       = erzet;
+    Ernam       = ernam;
+    Aedat       = aedat;
+    Aezet       = aezet;
+    Aenam       = aenam;
+  }
+}

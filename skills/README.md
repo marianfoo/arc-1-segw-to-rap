@@ -1,0 +1,192 @@
+# ARC-1 Skills
+
+Best-practice prompt templates for common SAP development workflows with ARC-1.
+
+## Usage
+
+These skills are prompt templates that work with any AI coding assistant that supports custom instructions or commands. Pick your tool below.
+
+### Claude Code (CLI / Desktop / Web)
+
+Copy skill files into your commands directory, then invoke as slash commands:
+
+```bash
+cp skills/generate-cds-unit-test.md ~/.claude/commands/
+```
+```
+/generate-cds-unit-test ZI_SALESORDER
+```
+
+Docs: https://docs.anthropic.com/en/docs/claude-code/slash-commands
+
+### VS Code — GitHub Copilot
+
+Add as a reusable prompt file in `.github/copilot-instructions.md` or use the **Copilot Chat prompt files** feature (`.github/prompts/*.prompt.md`). Reference in chat with `#<prompt-name>`.
+
+Docs: https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot
+
+### VS Code — Copilot Coding Agent (Copilot Workspace)
+
+Place instructions in `.github/copilot-instructions.md` — the agent reads them automatically for task context.
+
+Docs: https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot
+
+### Cursor
+
+Add as a **Rule** in `.cursor/rules/` (one `.md` file per skill). Rules are automatically included in context.
+
+Docs: https://cursor.com/docs/rules
+
+### OpenAI Codex (CLI)
+
+Copy a .rules file under ./codex/rules/ (for example, ~/.codex/rules/default.rules)
+
+Docs: https://developers.openai.com/codex/rules
+
+### Generic / Other Tools
+
+Copy the skill markdown content into your tool's system prompt, custom instructions, or project context file. The skills are self-contained prompt templates — they work anywhere you can provide custom instructions.
+
+## Prerequisites
+
+These skills assume you have:
+1. **ARC-1 MCP server** connected and configured (SAP system access). Required for every skill that touches ABAP.
+2. **mcp-sap-docs MCP server** connected (optional but recommended — provides SAP documentation context). Used by most skills; required for the UI5 modernization skills to look up V4 binding patterns and FCL behaviour.
+3. **SAPUI5 MCP server** (`@ui5/mcp-server`). Required for `modernize-ui5-app` and `convert-ui5-to-fiori-elements` — provides the authoritative TypeScript conversion guidelines, project scaffolding, ui5-linter, and manifest validation.
+4. **Fiori MCP server** (`@sap-ux/fiori-mcp-server`). Required for `convert-ui5-to-fiori-elements` only — provides the LROP scaffold + annotation-aware page-template configuration.
+5. **A browser MCP** — `Claude_in_Chrome` or `Claude_Preview`. Used by `modernize-ui5-app` for the final render verification step (HTTP 200 alone is not a sufficient acceptance gate — see the "blank page" traps in the skill).
+
+## Available Skills
+
+### Creating & Generating
+
+| Skill | What it does | When to use |
+|---|---|---|
+| [generate-rap-service](generate-rap-service.md) | Creates a complete RAP OData service stack (table, CDS views, BDEF, SRVD, SRVB, class) from a natural language description, with provider-contract-aware service generation | Quick prototyping, simple CRUD, standard UI service generation |
+| [generate-rap-service-researched](generate-rap-service-researched.md) | Same output as above, but researches the target system first (existing naming conventions, architecture patterns, revisions, docs, formatter settings, impact) and builds an approved plan before creating anything | Production-quality services in transportable packages, complex domains, "measure twice, cut once" mode |
+| [generate-rap-logic](generate-rap-logic.md) | Implements determination and validation methods in an existing RAP behavior pool using structured class reads, version-aware edits, and quickfix-aware validation | After creating a RAP service — fills in the empty method stubs with ABAP Cloud logic |
+| [generate-cds-unit-test](generate-cds-unit-test.md) | Generates ABAP Unit tests for CDS entities using the CDS Test Double Framework | When a CDS view has calculations, CASE expressions, WHERE filters, JOINs, or aggregations worth testing |
+| [generate-abap-unit-test](generate-abap-unit-test.md) | Generates ABAP Unit tests for classes with dependency analysis and test doubles | When a class has non-trivial business logic and uses dependency injection |
+
+#### generate-rap-service vs generate-rap-service-researched
+
+Both skills produce the same RAP artifact stack. The difference is how they get there:
+
+| | generate-rap-service | generate-rap-service-researched |
+|---|---|---|
+| **Approach** | "Vibe code" — starts creating immediately | "Measure twice, cut once" — researches first |
+| **Research** | None — uses SAP standard defaults | Deep — reads existing RAP projects, naming conventions, ATC config |
+| **Questions** | Minimal — just the business object description | Targeted — asks only what research couldn't answer |
+| **Plan approval** | Shows artifact table, asks to proceed | Full implementation plan with architecture decisions, requires explicit approval |
+| **Best for** | Quick prototyping, proof of concept, simple CRUD | Production services, complex domains, teams with established conventions |
+| **Guardrails** | Managed only, UUID, single entity, standard CRUD | Any scenario — managed/unmanaged, compositions, custom keys |
+
+### Recent ARC-1 Features These Skills Use
+
+- `SAPContext(action="impact")` for RAP/CDS reuse and "what breaks if I change this?" analysis
+- `SAPRead(type="VERSIONS")` and `SAPRead(type="VERSION_SOURCE")` for pattern mining and safer edits of existing RAP stacks
+- `SAPSearch(searchType="tadir_lookup", source="both")` for one-shot existence checks against both released and inactive variants, with a `splitBrain` warning when an object exists only in one source — used by `migrate-segw-to-rap` Phase 6a (ARC-1 v0.9.5+ / PR #270)
+- `SAPWrite(action="batch_create", activateAtEnd: true)` for atomic CDS-composition activation — replaces per-file + manual terminal activation in `migrate-segw-to-rap` Step 2 (ARC-1 v0.9.5+ / PR #270)
+- `SAPTransport(action="history")` for object-to-transport traceability during later iterations
+- `SAPLint(action="format" | "get_formatter_settings")` for SAP-native keyword case and indentation
+- `SAPRead` / `SAPWrite` for `SKTD` so generated RAP services can carry attached Markdown documentation
+- `SAPGit` when a package is already part of an abapGit or gCTS-backed delivery flow
+
+### Analyzing & Understanding
+
+| Skill | What it does | When to use |
+|---|---|---|
+| [explain-abap-code](explain-abap-code.md) | Reads an ABAP object, fetches all dependencies via SAPContext, and produces a structured explanation | Onboarding to unfamiliar code, investigating bugs, documenting undocumented objects |
+| [migrate-custom-code](migrate-custom-code.md) | Runs ATC readiness checks, groups findings by priority, and generates replacement code | Preparing custom code for S/4HANA migration or ABAP Cloud readiness |
+| [sap-object-documenter](sap-object-documenter.md) | Batch-documents many custom objects at once — purpose, style (Classic/Modern/Mixed), dependencies — as Markdown | Onboarding packages, handoffs, seeding a repo wiki (vs. explain-abap-code which is single-object interactive) |
+
+### Clean Core & Custom Code Retirement
+
+| Skill | What it does | When to use |
+|---|---|---|
+| [sap-clean-core-atc](sap-clean-core-atc.md) | Audits a package of custom code and buckets every Z/Y object into Clean Core Levels A–D using mcp-sap-docs + ATC | Planning an ECC→S/4HANA Cloud or BTP move; quarterly custom-code health check |
+| [sap-unused-code](sap-unused-code.md) | Finds Z/Y objects never called at runtime using SCMON or SUSG, then cross-references static where-used | Scoping a custom-code retirement project; pre-migration dead-code cleanup (requires `SAP_ALLOW_FREE_SQL=true` + `S_TABU_NAM` on `SCMON_*`/`SUSG_*`) |
+
+### Legacy Migration (Backend + UI)
+
+End-to-end conversion of legacy SAP stacks. `migrate-segw-to-rap` handles the OData V2 → RAP V4 backend; then **one of** the two UI skills runs in parallel against the new V4 service. Pick the UI path based on whether the target architecture is annotation-driven (Fiori Elements) or custom-controls freestyle (UI5 TypeScript).
+
+| Skill | What it does | When to use |
+|---|---|---|
+| [migrate-segw-to-rap](migrate-segw-to-rap.md) | Reverse-engineers a SEGW-built OData V2 service (MPC/DPC/MPC_EXT/DPC_EXT) into a modern RAP V4 service: tables, CDS views (interface + projection), behavior definitions, draft entities, service definition + binding | S/4HANA modernization; ABAP Cloud readiness; replacing CASE_MANAGEMENT_API / SEGW services that need to land on a Fiori Elements or modern UI5 app |
+| [convert-ui5-to-fiori-elements](convert-ui5-to-fiori-elements.md) | Generates a Fiori Elements V4 LROP app (list report + object page) driven by `@UI.*` annotations on the V4 service, using the Fiori MCP server's 3-step (`list_functionalities` → `get_functionality_details` → `execute_functionality`) workflow | The legacy UI maps cleanly to a standard LROP pattern; you want minimum custom code and maximum SAP-managed consistency |
+| [modernize-ui5-app](modernize-ui5-app.md) | Converts a legacy UI5 freestyle JavaScript app (sync bootstrap, jQuery.sap.*, ES5, sap_belize) into a modern UI5 TypeScript app on UI5 1.147 with `sap.f.FlexibleColumnLayout`, typed event handlers, ES modules, `BaseController`, sap_horizon — with 5 documented "Critical Traps" up front to skip past common debugging detours | The legacy UI has custom controls / non-standard UX that don't fit a Fiori Elements template, or you want a TypeScript freestyle baseline for further customization |
+
+#### convert-ui5-to-fiori-elements vs modernize-ui5-app
+
+Both run against the same V4 RAP service produced by `migrate-segw-to-rap`. The difference is the target UI architecture:
+
+| | convert-ui5-to-fiori-elements | modernize-ui5-app |
+|---|---|---|
+| **UI framework** | Fiori Elements V4 (`sap.fe.templates.*`) | UI5 1.147 freestyle (`sap.m.*` / `sap.f.*`) + TypeScript |
+| **Layout pattern** | List Report → Object Page (FCL-ready via `allowDeepLinking`) | FlexibleColumnLayout with hand-authored views |
+| **Customization mechanism** | OData annotations (`@UI.LineItem`, `@UI.HeaderInfo`, `@UI.DataPoint`, ...) on CDS projection / annotation views | Hand-authored XML views + TypeScript controllers |
+| **Custom code** | Minimal — annotations only; controller extensions only when unavoidable | Full — every view, controller, formatter is hand-written TS |
+| **Best for** | Standard CRUD, search/filter, sort, drilldown, value help, Approve/Submit action buttons | Non-standard UX, custom controls, dashboards, freeform layouts, anything `sap.fe.*` doesn't template |
+| **Skill depends on** | ARC-1 + sap-docs + ui5-mcp-server + fiori-mcp | ARC-1 (optional) + sap-docs + ui5-mcp-server + browser MCP |
+| **Maturity** | Driven by `@sap-ux/fiori-mcp-server` 3-step API + annotation-discovery via `mcp__sap-docs__search` | 5 documented Critical Traps from accumulated run learnings; teaches LLM to investigate via Self-help patterns |
+
+### System Context & Local Workflow
+
+| Skill | What it does | When to use |
+|---|---|---|
+| [bootstrap-system-context](bootstrap-system-context.md) | Probes SID, release, installed components, feature flags, and lint preset; writes a local `system-info.md` | First step of a session against an unfamiliar system — grounds the assistant in real constraints before any code work |
+| [setup-abap-mirror](setup-abap-mirror.md) | Creates a local abapGit-style mirror of a package or object list for IDE context and `git diff` | Onboarding a codebase, pre-migration snapshotting, feeding local context to tools that can't call MCP per-read |
+
+### Meta / Quality
+
+| Skill | What it does | When to use |
+|---|---|---|
+| [analyze-chat-session](analyze-chat-session.md) | Analyzes the current conversation's tool calls and produces a feedback report | After a complex session — identifies inefficiencies, anti-patterns, and improvement suggestions |
+
+### Typical Workflow
+
+Skills are designed to chain together. A typical RAP development flow:
+
+```
+1. bootstrap-system-context         →  Capture SID, release, features, lint preset
+2. generate-rap-service-researched  →  Create the service stack (uses system-info.md)
+3. generate-rap-logic               →  Add business logic (validations, determinations)
+4. generate-abap-unit-test          →  Generate tests for the behavior pool
+5. generate-cds-unit-test           →  Generate tests for the CDS views
+6. optional: attach SKTD docs / inspect revisions / inspect transport history
+7. analyze-chat-session             →  Review what worked, file improvements
+```
+
+For codebase onboarding or pre-migration work:
+
+```
+1. bootstrap-system-context  →  Know the system
+2. setup-abap-mirror         →  Pull the target package(s) into abapGit-style files
+3. explain-abap-code         →  Understand key objects with dependency context
+4. migrate-custom-code       →  Run ATC readiness checks and group findings
+```
+
+For clean-core / custom-code retirement planning:
+
+```
+1. bootstrap-system-context  →  Know the system
+2. sap-unused-code           →  Scope the retirement (what even runs?)
+3. sap-clean-core-atc        →  Classify the USED code into Levels A–D
+4. sap-object-documenter     →  Document the keepers before rewriting
+5. migrate-custom-code       →  Fix the Level B/C/D findings one at a time
+```
+
+For end-to-end legacy SEGW + UI5 modernization (backend + UI):
+
+```
+1. bootstrap-system-context             →  Know the system
+2. migrate-segw-to-rap                  →  Reverse-engineer SEGW V2 service to RAP V4
+                                            (tables, CDS, BDEF, SRVD, SRVB, draft entities)
+3. ONE of (parallel paths against the new V4 service):
+   - convert-ui5-to-fiori-elements      →  Annotation-driven Fiori Elements V4 LROP
+   - modernize-ui5-app                  →  Freestyle UI5 1.147 + TypeScript
+4. analyze-chat-session                 →  Capture learnings; propose new skill traps
+```
+
+The three migration skills are explicitly designed as parallel paths after the backend lands. You don't run both UI skills — you pick the one whose architecture matches your legacy app's complexity and your team's preference.

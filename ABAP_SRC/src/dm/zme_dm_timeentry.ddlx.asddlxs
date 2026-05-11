@@ -1,0 +1,22 @@
+@EndUserText.label: 'UI annotations: TimeEntry'
+@Metadata.layer: #CORE
+annotate view ZC_DM_TIMEENTRY with
+{
+  @UI.lineItem: [{ position: 5 }]
+  EntryId;
+
+  @UI.lineItem: [{ position: 10 }]
+  TaskId;
+
+  @UI.lineItem: [{ position: 15 }]
+  ProjectId;
+
+  @UI.lineItem: [{ position: 20 }]
+  WorkDate;
+
+  @UI.lineItem: [{ position: 30 }]
+  WorkHours;
+
+  @UI.lineItem: [{ position: 40 }]
+  Username;
+}

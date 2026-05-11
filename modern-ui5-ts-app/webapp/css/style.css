@@ -1,0 +1,12 @@
+/* Modernized styles (FCL + object header spacing) */
+.sapFFCL .sapMObjectListItem {
+	border-bottom: 1px solid #eaeaea;
+}
+
+#objHeader {
+	margin: 1rem;
+}
+
+.sapUiSizeCompact #objHeader {
+	margin: 0.5rem;
+}

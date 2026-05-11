@@ -1,0 +1,17 @@
+/* legacy-2020 freestyle css — kein scoping, kein BEM, einfach Selektoren */
+
+.sapMSplitContainerMaster {
+	background-color: #ffffff;
+}
+
+#splitApp .sapMObjectListItem {
+	border-bottom: 1px solid #eaeaea;
+}
+
+#objHeader {
+	margin: 1rem;
+}
+
+.sapUiSizeCompact #objHeader {
+	margin: 0.5rem;
+}

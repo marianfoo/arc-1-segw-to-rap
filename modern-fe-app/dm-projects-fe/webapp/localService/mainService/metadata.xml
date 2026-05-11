@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="ZUI_DM_PROJECTS" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Project">
+                <Key>
+                    <PropertyRef Name="ProjectId"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="ProjectId" Type="Edm.String" Nullable="false" MaxLength="32"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="Title" Type="Edm.String" MaxLength="128"/>
+                <Property Name="Description" Type="Edm.String" MaxLength="1024"/>
+                <Property Name="Status" Type="Edm.String" MaxLength="1"/>
+                <Property Name="StartDate" Type="Edm.DateTimeOffset" Nullable="true"/>
+                <Property Name="EndDate" Type="Edm.DateTimeOffset" Nullable="true"/>
+                <Property Name="Erdat" Type="Edm.DateTimeOffset" Nullable="true"/>
+                <Property Name="Erzet" Type="Edm.TimeOfDay" Nullable="true"/>
+                <Property Name="Ernam" Type="Edm.String" MaxLength="12"/>
+                <Property Name="Aedat" Type="Edm.DateTimeOffset" Nullable="true"/>
+                <Property Name="Aezet" Type="Edm.TimeOfDay" Nullable="true"/>
+                <Property Name="Aenam" Type="Edm.String" MaxLength="12"/>
+                <Property Name="CreationTimeStamp" Type="Edm.DateTimeOffset" Nullable="true"/>
+                <Property Name="LastChangedStamp" Type="Edm.DateTimeOffset" Nullable="true"/>
+                <NavigationProperty Name="_Tasks" Type="Collection(ZUI_DM_PROJECTS.Task)" Partner="_Project" ContainsTarget="true"/>
+            </EntityType>
+            <EntityType Name="Task">
+                <Key>
+                    <PropertyRef Name="ProjectId"/>
+                    <PropertyRef Name="TaskId"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="ProjectId" Type="Edm.String" Nullable="false" MaxLength="32"/>
+                <Property Name="TaskId" Type="Edm.String" Nullable="false" MaxLength="32"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="Title" Type="Edm.String" MaxLength="128"/>
+                <Property Name="Description" Type="Edm.String" MaxLength="1024"/>
+                <Property Name="Status" Type="Edm.String" MaxLength="2"/>
+                <Property Name="Priority" Type="Edm.Byte" Nullable="true"/>
+                <Property Name="DueDate" Type="Edm.DateTimeOffset" Nullable="true"/>
+                <Property Name="AssignedTo" Type="Edm.String" MaxLength="64"/>
+                <Property Name="EstimatedHours" Type="Edm.Decimal" Precision="15" Scale="2" Nullable="true"/>
+                <Property Name="Erdat" Type="Edm.DateTimeOffset" Nullable="true"/>
+                <Property Name="Erzet" Type="Edm.TimeOfDay" Nullable="true"/>
+                <Property Name="Ernam" Type="Edm.String" MaxLength="12"/>
+                <Property Name="Aedat" Type="Edm.DateTimeOffset" Nullable="true"/>
+                <Property Name="Aezet" Type="Edm.TimeOfDay" Nullable="true"/>
+                <Property Name="Aenam" Type="Edm.String" MaxLength="12"/>
+                <NavigationProperty Name="_Project" Type="ZUI_DM_PROJECTS.Project" Nullable="false" Partner="_Tasks">
+                    <ReferentialConstraint Property="ProjectId" ReferencedProperty="ProjectId"/>
+                </NavigationProperty>
+                <NavigationProperty Name="_TimeEntries" Type="Collection(ZUI_DM_PROJECTS.TimeEntry)" Partner="_Task" ContainsTarget="true"/>
+            </EntityType>
+            <EntityType Name="TimeEntry">
+                <Key>
+                    <PropertyRef Name="ProjectId"/>
+                    <PropertyRef Name="TaskId"/>
+                    <PropertyRef Name="EntryId"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="ProjectId" Type="Edm.String" Nullable="false" MaxLength="32"/>
+                <Property Name="TaskId" Type="Edm.String" Nullable="false" MaxLength="32"/>
+                <Property Name="EntryId" Type="Edm.String" Nullable="false" MaxLength="32"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="WorkDate" Type="Edm.DateTimeOffset" Nullable="true"/>
+                <Property Name="WorkHours" Type="Edm.Decimal" Precision="15" Scale="2" Nullable="true"/>
+                <Property Name="Description" Type="Edm.String" MaxLength="1024"/>
+                <Property Name="Username" Type="Edm.String" MaxLength="64"/>
+                <Property Name="Erdat" Type="Edm.DateTimeOffset" Nullable="true"/>
+                <Property Name="Erzet" Type="Edm.TimeOfDay" Nullable="true"/>
+                <Property Name="Ernam" Type="Edm.String" MaxLength="12"/>
+                <Property Name="Aedat" Type="Edm.DateTimeOffset" Nullable="true"/>
+                <Property Name="Aezet" Type="Edm.TimeOfDay" Nullable="true"/>
+                <Property Name="Aenam" Type="Edm.String" MaxLength="12"/>
+                <NavigationProperty Name="_Task" Type="ZUI_DM_PROJECTS.Task" Nullable="false" Partner="_TimeEntries">
+                    <ReferentialConstraint Property="ProjectId" ReferencedProperty="ProjectId"/>
+                    <ReferentialConstraint Property="TaskId" ReferencedProperty="TaskId"/>
+                </NavigationProperty>
+                <NavigationProperty Name="_Project" Type="ZUI_DM_PROJECTS.Project" Nullable="false">
+                    <ReferentialConstraint Property="ProjectId" ReferencedProperty="ProjectId"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Project" EntityType="ZUI_DM_PROJECTS.Project">
+                    <NavigationPropertyBinding Path="_Tasks" Target="Task"/>
+                </EntitySet>
+                <EntitySet Name="Task" EntityType="ZUI_DM_PROJECTS.Task">
+                    <NavigationPropertyBinding Path="_Project" Target="Project"/>
+                    <NavigationPropertyBinding Path="_TimeEntries" Target="TimeEntry"/>
+                </EntitySet>
+                <EntitySet Name="TimeEntry" EntityType="ZUI_DM_PROJECTS.TimeEntry">
+                    <NavigationPropertyBinding Path="_Task" Target="Task"/>
+                    <NavigationPropertyBinding Path="_Project" Target="Project"/>
+                </EntitySet>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

@@ -1,0 +1,142 @@
+{
+	"_version": "2.0.0",
+	"sap.app": {
+		"id": "com.demo.migration.projects.modern",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"dataSources": {
+			"mainService": {
+				"uri": "/sap/opu/odata4/sap/zui_dm_projects_o4/srvd/sap/zui_dm_projects_o4/0001/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "4.0"
+				}
+			}
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "sap-icon://task",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "com.demo.migration.projects.modern.view.App",
+			"type": "XML",
+			"id": "app"
+		},
+		"dependencies": {
+			"minUI5Version": "1.147.0",
+			"libs": {
+				"sap.ui.core": {},
+				"sap.m": {},
+				"sap.f": {},
+				"sap.ui.layout": {}
+			}
+		},
+		"flexEnabled": false,
+		"handleValidation": true,
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"": {
+				"type": "sap.ui.model.odata.v4.ODataModel",
+				"dataSource": "mainService",
+				"settings": {
+					"operationMode": "Server",
+					"autoExpandSelect": true,
+					"earlyRequests": true
+				}
+			},
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "com.demo.migration.projects.modern.i18n.i18n",
+					"async": true
+				}
+			}
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.f.routing.Router",
+				"type": "View",
+				"viewType": "XML",
+				"path": "com.demo.migration.projects.modern.view",
+				"controlId": "flexibleColumnLayout",
+				"controlAggregation": "beginColumnPages",
+				"bypassed": {
+					"target": "notFound"
+				}
+			},
+			"routes": [
+				{
+					"pattern": "",
+					"name": "main",
+					"target": ["main", "welcome"],
+					"layout": "TwoColumnsMidExpanded"
+				},
+				{
+					"pattern": "Projects/{projectId}",
+					"name": "detail",
+					"target": ["main", "detail"],
+					"layout": "TwoColumnsMidExpanded"
+				}
+			],
+			"targets": {
+				"main": {
+					"type": "View",
+					"id": "main",
+					"name": "Main",
+					"level": 1,
+					"controlAggregation": "beginColumnPages"
+				},
+				"welcome": {
+					"type": "View",
+					"id": "welcome",
+					"name": "Welcome",
+					"level": 2,
+					"controlAggregation": "midColumnPages"
+				},
+				"detail": {
+					"type": "View",
+					"id": "detail",
+					"name": "Detail",
+					"level": 2,
+					"controlAggregation": "midColumnPages"
+				},
+				"notFound": {
+					"type": "View",
+					"id": "notFound",
+					"name": "NotFound",
+					"level": 2,
+					"controlAggregation": "midColumnPages"
+				}
+			}
+		}
+	}
+}

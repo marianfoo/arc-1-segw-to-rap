@@ -1,0 +1,132 @@
+<mvc:View
+	controllerName="com.demo.migration.projects.legacy.controller.Detail"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core">
+	<Page
+		id="detailPage"
+		title="{i18n>detailTitle}"
+		showNavButton="{device>/system/phone}"
+		navButtonPress="onNavBack">
+
+		<headerContent>
+			<Button
+				id="approveBtn"
+				text="{i18n>detailButtonApprove}"
+				type="Emphasized"
+				icon="sap-icon://accept"
+				enabled="{= ${Status} === 'D' }"
+				press="onApprove" />
+		</headerContent>
+
+		<content>
+			<ObjectHeader
+				id="objHeader"
+				title="{Title}"
+				number="{ path: 'Status', formatter: 'window.com.demo.migration.projects.legacy.model.formatter.statusText' }"
+				numberState="{ path: 'Status', formatter: 'window.com.demo.migration.projects.legacy.model.formatter.statusState' }"
+				responsive="true"
+				condensed="false"
+				backgroundDesign="Translucent">
+				<attributes>
+					<ObjectAttribute title="ID" text="{ProjectId}" />
+					<ObjectAttribute title="Description" text="{Description}" />
+					<ObjectAttribute title="Start" text="{ path: 'StartDate', formatter: 'window.com.demo.migration.projects.legacy.model.formatter.dateShort' }" />
+					<ObjectAttribute title="End"   text="{ path: 'EndDate',   formatter: 'window.com.demo.migration.projects.legacy.model.formatter.dateShort' }" />
+					<ObjectAttribute title="Created" text="{Ernam} on { path: 'Erdat', formatter: 'window.com.demo.migration.projects.legacy.model.formatter.dateShort' }" />
+					<ObjectAttribute title="Changed" text="{Aenam} on { path: 'Aedat', formatter: 'window.com.demo.migration.projects.legacy.model.formatter.dateShort' }" />
+				</attributes>
+			</ObjectHeader>
+
+			<IconTabBar
+				id="iconTabBar"
+				expandable="false"
+				class="sapUiResponsiveContentPadding">
+
+				<items>
+					<IconTabFilter
+						id="tabTasks"
+						icon="sap-icon://task"
+						text="Tasks"
+						count="{tasksCount>/value}">
+						<Table
+							id="tasksTable"
+							inset="false"
+							items="{Tasks}"
+							noDataText="No tasks for this project."
+							growing="true"
+							growingThreshold="20"
+							mode="SingleSelectMaster"
+							selectionChange="onTaskSelect">
+							<columns>
+								<Column hAlign="Begin"><Text text="{i18n>tasksColumnId}" /></Column>
+								<Column hAlign="Begin"><Text text="{i18n>tasksColumnTitle}" /></Column>
+								<Column hAlign="Begin"><Text text="{i18n>tasksColumnStatus}" /></Column>
+								<Column hAlign="Begin"><Text text="{i18n>tasksColumnPriority}" /></Column>
+								<Column hAlign="End"><Text text="{i18n>tasksColumnDueDate}" /></Column>
+								<Column hAlign="Begin"><Text text="{i18n>tasksColumnAssignee}" /></Column>
+								<Column hAlign="End"><Text text="{i18n>tasksColumnEstHours}" /></Column>
+							</columns>
+							<items>
+								<ColumnListItem type="Active" press="onTaskPress">
+									<cells>
+										<Text text="{TaskId}" />
+										<ObjectIdentifier title="{Title}" text="{Description}" />
+										<ObjectStatus
+											text="{ path: 'Status', formatter: 'window.com.demo.migration.projects.legacy.model.formatter.taskStatusText' }"
+											state="{ path: 'Status', formatter: 'window.com.demo.migration.projects.legacy.model.formatter.taskStatusState' }" />
+										<ObjectStatus
+											text="{ path: 'Priority', formatter: 'window.com.demo.migration.projects.legacy.model.formatter.priorityText' }"
+											state="{ path: 'Priority', formatter: 'window.com.demo.migration.projects.legacy.model.formatter.priorityState' }" />
+										<Text text="{ path: 'DueDate', formatter: 'window.com.demo.migration.projects.legacy.model.formatter.dateShort' }" />
+										<Text text="{AssignedTo}" />
+										<Text text="{ path: 'EstimatedHours', formatter: 'window.com.demo.migration.projects.legacy.model.formatter.hoursDecimal' }" />
+									</cells>
+								</ColumnListItem>
+							</items>
+						</Table>
+					</IconTabFilter>
+
+					<IconTabFilter
+						id="tabEntries"
+						icon="sap-icon://history"
+						text="Time Entries"
+						count="{entriesCount>/value}">
+						<Table
+							id="entriesTable"
+							inset="false"
+							items="{
+								path: 'view>/timeEntriesPath',
+								templateShareable: false
+							}"
+							noDataText="No time entries (select a task)."
+							growing="true"
+							growingThreshold="20">
+							<columns>
+								<Column hAlign="Begin"><Text text="{i18n>entriesColumnId}" /></Column>
+								<Column hAlign="Begin"><Text text="{i18n>entriesColumnTask}" /></Column>
+								<Column hAlign="End"><Text text="{i18n>entriesColumnDate}" /></Column>
+								<Column hAlign="End"><Text text="{i18n>entriesColumnHours}" /></Column>
+								<Column hAlign="Begin"><Text text="{i18n>entriesColumnDescription}" /></Column>
+								<Column hAlign="Begin"><Text text="{i18n>entriesColumnUser}" /></Column>
+							</columns>
+							<items>
+								<ColumnListItem>
+									<cells>
+										<Text text="{EntryId}" />
+										<Text text="{TaskId}" />
+										<Text text="{ path: 'WorkDate', formatter: 'window.com.demo.migration.projects.legacy.model.formatter.dateShort' }" />
+										<Text text="{ path: 'WorkHours', formatter: 'window.com.demo.migration.projects.legacy.model.formatter.hoursDecimal' }" />
+										<Text text="{Description}" />
+										<Text text="{Username}" />
+									</cells>
+								</ColumnListItem>
+							</items>
+						</Table>
+					</IconTabFilter>
+				</items>
+			</IconTabBar>
+
+		</content>
+	</Page>
+</mvc:View>

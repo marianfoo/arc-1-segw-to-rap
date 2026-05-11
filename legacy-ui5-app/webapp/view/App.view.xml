@@ -1,0 +1,7 @@
+<mvc:View
+	controllerName="com.demo.migration.projects.legacy.controller.App"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	displayBlock="true">
+	<SplitApp id="splitApp" mode="ShowHideMode" backgroundColor="#f7f7f7" />
+</mvc:View>

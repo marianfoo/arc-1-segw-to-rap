@@ -1,0 +1,16 @@
+{
+  "name": "arc-1-legacy-ui5-rap-conversion",
+  "version": "1.0.0",
+  "description": "Open this folder in **Cursor** (or Claude Code, or VS Code) — you've inherited a working SAP landscape with a legacy SEGW service plus an old UI5 freestyle app, and three skills that walk you through modernizing both.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@sap/generator-fiori": "^1.23.0",
+    "yo": "^7.0.1"
+  }
+}

@@ -1,0 +1,80 @@
+@EndUserText.label: 'UI annotations: Project'
+@Metadata.layer: #CORE
+annotate view ZC_DM_PROJECT with
+{
+  @UI.facet: [
+    {
+      id              : 'General',
+      purpose         : #STANDARD,
+      type            : #IDENTIFICATION_REFERENCE,
+      label           : 'General'
+    },
+    {
+      id              : 'Audit',
+      purpose         : #STANDARD,
+      type            : #FIELDGROUP_REFERENCE,
+      label           : 'Audit',
+      targetQualifier : 'Audit'
+    },
+    {
+      id            : 'Tasks',
+      purpose       : #STANDARD,
+      type          : #LINEITEM_REFERENCE,
+      label         : 'Tasks',
+      targetElement : '_Tasks'
+    }
+  ]
+
+  @UI.lineItem: [{ position: 10 }]
+  @UI.selectionField: [{ position: 10 }]
+  @UI.identification: [
+    { position: 10 },
+    {
+      type                      : #FOR_ACTION,
+      label                     : 'Approve',
+      dataAction                : 'approve_project',
+      criticalityRepresentation : #WITH_ICON
+    }
+  ]
+  ProjectId;
+
+  @UI.lineItem: [{ position: 20, importance: #HIGH }]
+  @UI.selectionField: [{ position: 20 }]
+  @UI.identification: [{ position: 20 }]
+  Title;
+
+  @UI.lineItem: [{ position: 30 }]
+  @UI.identification: [{ position: 30 }]
+  Description;
+
+  @UI.lineItem: [{ position: 40, importance: #HIGH }]
+  @UI.selectionField: [{ position: 40 }]
+  @UI.identification: [{ position: 40 }]
+  Status;
+
+  @UI.lineItem: [{ position: 50 }]
+  @UI.selectionField: [{ position: 50 }]
+  @UI.identification: [{ position: 50 }]
+  StartDate;
+
+  @UI.lineItem: [{ position: 60 }]
+  @UI.selectionField: [{ position: 60 }]
+  @UI.identification: [{ position: 60 }]
+  EndDate;
+
+  @UI.fieldGroup: [{ qualifier: 'Audit', position: 10, label: 'Created On' }]
+  @UI.identification: [{ position: 70 }]
+  Erdat;
+
+  @UI.fieldGroup: [{ qualifier: 'Audit', position: 20, label: 'Created By' }]
+  @UI.identification: [{ position: 80 }]
+  Ernam;
+
+  @UI.fieldGroup: [{ qualifier: 'Audit', position: 30, label: 'Changed On' }]
+  @UI.identification: [{ position: 90 }]
+  Aedat;
+
+  @UI.fieldGroup: [{ qualifier: 'Audit', position: 40, label: 'Changed By' }]
+  @UI.identification: [{ position: 100 }]
+  Aenam;
+}

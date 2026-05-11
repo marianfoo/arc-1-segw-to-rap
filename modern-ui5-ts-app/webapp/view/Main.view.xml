@@ -1,0 +1,65 @@
+<mvc:View
+	controllerName="com.demo.migration.projects.modern.controller.Main"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	core:require="{ formatter: 'com/demo/migration/projects/modern/model/formatter' }"
+>
+	<Page
+		id="mainPage"
+		title="{i18n>mainTitle}"
+		showNavButton="false"
+	>
+		<subHeader>
+			<Toolbar>
+				<SearchField
+					id="searchField"
+					width="100%"
+					placeholder="{i18n>mainSearchPlaceholder}"
+					liveChange=".onSearch"
+				/>
+			</Toolbar>
+		</subHeader>
+		<content>
+			<List
+				id="projectList"
+				items="{
+					path: '/Project',
+					sorter: { path: 'StartDate', descending: true }
+				}"
+				mode="SingleSelectMaster"
+				growing="true"
+				growingThreshold="20"
+				selectionChange=".onSelect"
+				noDataText="No projects found."
+			>
+				<ObjectListItem
+					title="{Title}"
+					number="{ path: 'Status', formatter: 'formatter.statusText' }"
+					numberState="{ path: 'Status', formatter: 'formatter.statusState' }"
+					type="Active"
+					press=".onItemPress"
+				>
+					<firstStatus>
+						<ObjectStatus text="ID: {ProjectId}" />
+					</firstStatus>
+					<attributes>
+						<ObjectAttribute
+							text="{
+								parts: [{ path: 'StartDate' }, { path: 'EndDate' }],
+								formatter: 'formatter.formatDateRange'
+							}"
+						/>
+						<ObjectAttribute text="{Description}" />
+					</attributes>
+				</ObjectListItem>
+			</List>
+		</content>
+		<footer>
+			<Toolbar>
+				<Text id="countText" text="" />
+				<ToolbarSpacer />
+			</Toolbar>
+		</footer>
+	</Page>
+</mvc:View>

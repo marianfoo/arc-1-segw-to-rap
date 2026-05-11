@@ -1,0 +1,16 @@
+{
+  "BASEINFO": {
+    "FROM": [
+      "ZI_DM_TIMEENTRY"
+    ],
+    "ASSOCIATED": [
+      "ZC_DM_PROJECT",
+      "ZC_DM_TASK",
+      "ZI_DM_PROJECT",
+      "ZI_DM_TASK"
+    ],
+    "BASE": [
+      "ZI_DM_TIMEENTRY"
+    ]
+  }
+}
